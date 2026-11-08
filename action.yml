@@ -1,0 +1,40 @@
+name: AI use disclosure
+description: Fail a pull request until its description says whether AI tools were used, and how.
+author: modulane
+
+branding:
+  icon: check-square
+  color: purple
+
+inputs:
+  body:
+    description: The text to check. Defaults to the pull request description.
+    default: ${{ github.event.pull_request.body }}
+  author:
+    description: The login checked against exempt-authors. Defaults to the pull request author.
+    default: ${{ github.event.pull_request.user.login }}
+  exempt-authors:
+    description: Logins that need no disclosure, separated by commas or new lines.
+    default: dependabot[bot]
+  section:
+    description: The level-two heading of the section that holds the boxes.
+    default: AI use
+  none-box:
+    description: The start of the box that says no AI tool was used.
+    default: No AI tool was used
+  used-box:
+    description: The start of the box that says AI tools were used.
+    default: AI tools were used
+  min-details:
+    description: The fewest characters that describe the tools used and what they did.
+    default: '20'
+
+outputs:
+  result:
+    description: '"none", "used" or "exempt" when the check passes, "missing" when it fails.'
+
+# The runner's own Node.js runs the action, so it also works in container jobs
+# and on self-hosted runners without Node.js. It has no dependencies to bundle.
+runs:
+  using: node24
+  main: src/main.js
